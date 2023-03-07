@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
 
@@ -7,12 +8,34 @@ import Button from "../../components/Button/Button";
 import AuthProviderButton from "../../components/AuthProviderButton/AuthProviderButton";
 import GoogleIcon from "../../assets/icons/GoogleIcon";
 import SwitchFormAnimation from "../../components/SwitchFormAnimation/SwitchFormAnimation";
+import { supabase } from "../../supabaseClient";
 
 const LoginPage = () => {
-  const { control, handleSubmit } = useForm<ILoginFormValues>();
+  const { auth } = supabase;
 
-  const onSubmit: SubmitHandler<ILoginFormValues> = (data) => {
-    console.log(data);
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ILoginFormValues>();
+
+  const onSubmit: SubmitHandler<ILoginFormValues> = async ({
+    email,
+    password,
+  }) => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -25,6 +48,13 @@ const LoginPage = () => {
         <Controller
           name="email"
           control={control}
+          defaultValue=""
+          rules={{
+            required: {
+              value: true,
+              message: "Email is required",
+            },
+          }}
           render={({ field: { value, onChange } }) => (
             <Input
               label="Email"
@@ -32,12 +62,20 @@ const LoginPage = () => {
               placeholder="Type your email"
               value={value}
               onChange={onChange}
+              error={errors.email?.message}
             />
           )}
         />
         <Controller
           name="password"
           control={control}
+          defaultValue=""
+          rules={{
+            required: {
+              value: true,
+              message: "Password is required",
+            },
+          }}
           render={({ field: { value, onChange } }) => (
             <Input
               label="Password"
@@ -45,13 +83,14 @@ const LoginPage = () => {
               placeholder="Type your password"
               value={value}
               onChange={onChange}
+              error={errors.password?.message}
             />
           )}
         />
         <span className="text-right font-semibold cursor-pointer mb-4">
           Forgot password
         </span>
-        <Button type="submit" text="Log in" />
+        <Button type="submit" text="Log in" isLoading={isLoading} />
         <div className="flex items-center gap-2 my-6">
           <div className="flex-1 h-0.5 bg-zinc-200" />
           <span className="font-semibold text-zinc-200 select-none">or</span>

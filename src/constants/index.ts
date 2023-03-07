@@ -3,3 +3,7 @@ export const routePaths = {
   login: "/login",
   signup: "/signup",
 };
+
+export const BREAKPOINTS = {
+  mobile: 768,
+};

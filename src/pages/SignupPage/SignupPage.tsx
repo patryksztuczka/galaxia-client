@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
 
@@ -7,12 +8,43 @@ import Button from "../../components/Button/Button";
 import AuthProviderButton from "../../components/AuthProviderButton/AuthProviderButton";
 import GoogleIcon from "../../assets/icons/GoogleIcon";
 import SwitchFormAnimation from "../../components/SwitchFormAnimation/SwitchFormAnimation";
+import { supabase } from "../../supabaseClient";
 
 const SignupPage = () => {
-  const { control, handleSubmit } = useForm<ISignupFormValues>();
+  const { auth } = supabase;
+  const [isLoading, setIsLoading] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ISignupFormValues>();
 
-  const onSubmit: SubmitHandler<ISignupFormValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<ISignupFormValues> = async ({
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+  }) => {
+    try {
+      if (password !== confirmPassword) return;
+      setIsLoading(true);
+      const { data, error } = await auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            firstName,
+            lastName,
+          },
+        },
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -22,10 +54,17 @@ const SignupPage = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <h1 className="text-5xl font-bold text-center mb-8">Sign up.</h1>
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <Controller
             name="firstName"
             control={control}
+            defaultValue=""
+            rules={{
+              required: {
+                value: true,
+                message: "First name is required",
+              },
+            }}
             render={({ field: { value, onChange } }) => (
               <Input
                 label="First name"
@@ -33,12 +72,20 @@ const SignupPage = () => {
                 placeholder="Type your first name"
                 value={value}
                 onChange={onChange}
+                error={errors.firstName?.message}
               />
             )}
           />
           <Controller
             name="lastName"
             control={control}
+            defaultValue=""
+            rules={{
+              required: {
+                value: true,
+                message: "Last name is required",
+              },
+            }}
             render={({ field: { value, onChange } }) => (
               <Input
                 label="Last name"
@@ -46,6 +93,7 @@ const SignupPage = () => {
                 placeholder="Type your last name"
                 value={value}
                 onChange={onChange}
+                error={errors.lastName?.message}
               />
             )}
           />
@@ -53,6 +101,13 @@ const SignupPage = () => {
         <Controller
           name="email"
           control={control}
+          defaultValue=""
+          rules={{
+            required: {
+              value: true,
+              message: "Email is required",
+            },
+          }}
           render={({ field: { value, onChange } }) => (
             <Input
               label="Email"
@@ -60,12 +115,20 @@ const SignupPage = () => {
               placeholder="Type your email"
               value={value}
               onChange={onChange}
+              error={errors.email?.message}
             />
           )}
         />
         <Controller
           name="password"
           control={control}
+          defaultValue=""
+          rules={{
+            required: {
+              value: true,
+              message: "Password is required",
+            },
+          }}
           render={({ field: { value, onChange } }) => (
             <Input
               label="Password"
@@ -73,12 +136,20 @@ const SignupPage = () => {
               placeholder="Pick a strong password"
               value={value}
               onChange={onChange}
+              error={errors.password?.message}
             />
           )}
         />
         <Controller
           name="confirmPassword"
           control={control}
+          defaultValue=""
+          rules={{
+            required: {
+              value: true,
+              message: "Password confirmation is required",
+            },
+          }}
           render={({ field: { value, onChange } }) => (
             <Input
               label="Confirm password"
@@ -86,11 +157,12 @@ const SignupPage = () => {
               placeholder="Type picked password again"
               value={value}
               onChange={onChange}
+              error={errors.confirmPassword?.message}
             />
           )}
         />
         <div className="mt-5">
-          <Button type="submit" text="Sign up" />
+          <Button type="submit" text="Sign up" isLoading={isLoading} />
         </div>
         <div className="flex items-center gap-2 my-6">
           <div className="flex-1 h-0.5 bg-zinc-200" />

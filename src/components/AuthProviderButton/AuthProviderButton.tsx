@@ -1,5 +1,3 @@
-import React from "react";
-import GoogleIcon from "../../assets/icons/GoogleIcon";
 import { IAuthProviderButtonProps } from "./AuthProviderButton.types";
 
 const AuthProviderButton = ({
