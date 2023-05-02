@@ -7,6 +7,10 @@ export const routePaths = {
   login: "/login",
   signup: "/signup",
   explore: "/explore",
+
+  events: "/events",
+  event: "/events/:id",
+
   settings: "/settings",
 };
 

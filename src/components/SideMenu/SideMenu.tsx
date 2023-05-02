@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-import { menuItems } from "../../constants";
+import { menuItems } from '../../constants';
 
 const SideMenu = () => {
   return (
-    <div className="flex flex-col gap-2 p-4 rounded-lg w-72 bg-white">
+    <div className="flex w-72 flex-col gap-2 rounded-lg bg-white p-4">
       {menuItems.map((item) => (
         <Link key={item.route} to={item.route} className="font-medium">
           {item.label}
