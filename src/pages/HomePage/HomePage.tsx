@@ -1,16 +1,21 @@
-import { supabase } from "../../supabaseClient";
+import { useEffect } from "react";
+
+import { useBoundStore } from "../../zustand/store";
+import EventCard from "../../components/EventCard/EventCard";
 
 const HomePage = () => {
-  const { auth } = supabase;
+  const getEvents = useBoundStore((state) => state.getEvents);
+  const events = useBoundStore((state) => state.events);
 
-  const handleLogout = async () => {
-    await auth.signOut();
-  };
+  useEffect(() => {
+    getEvents();
+  }, []);
 
   return (
-    <div>
-      HomePage
-      <button onClick={handleLogout}>log out</button>
+    <div className="flex flex-col gap-4">
+      {events?.map((event) => (
+        <EventCard key={event.id} event={event} />
+      ))}
     </div>
   );
 };
