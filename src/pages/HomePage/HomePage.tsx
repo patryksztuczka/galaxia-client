@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
-import { useBoundStore } from "../../zustand/store";
-import EventCard from "../../components/EventCard/EventCard";
+import { useBoundStore } from '../../zustand/store';
+import EventCard from '../../components/EventCard/EventCard';
 
 const HomePage = () => {
   const getEvents = useBoundStore((state) => state.getEvents);

@@ -1,9 +1,11 @@
 import { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 import { supabase } from '../../supabaseClient';
 import { useAuth } from '../../context/AuthContext/AuthContext';
 import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick';
 import userPlaceholderImage from '../../assets/images/user-placeholder.jpg';
+import { routePaths } from '../../constants';
 
 const UserDropdown = () => {
   const { auth } = supabase;
@@ -38,7 +40,7 @@ const UserDropdown = () => {
       />
       {isOpen && (
         <div className="absolute top-10 right-0 z-10 flex w-40 flex-col gap-2 rounded-lg bg-white p-2 shadow-primary">
-          <span>{`${user?.user_metadata.firstName} ${user?.user_metadata.lastName}`}</span>
+          <Link to={`${routePaths.profiles}/${user?.id}`}>{user?.user_metadata.full_name}</Link>
           <span onClick={handleLogout}>Log out</span>
         </div>
       )}

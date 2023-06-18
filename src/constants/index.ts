@@ -1,17 +1,20 @@
-import { IMenuItem } from "../types/IMenuItem";
-import ChampagneGlassesIcon from "../assets/icons/ChampagneGlassesIcon";
-import GearIcon from "../assets/icons/GearIcon";
+import { IMenuItem } from '../types/IMenuItem';
+import ChampagneGlassesIcon from '../assets/icons/ChampagneGlassesIcon';
+import GearIcon from '../assets/icons/GearIcon';
 
 export const routePaths = {
-  home: "/",
-  login: "/login",
-  signup: "/signup",
-  explore: "/explore",
+  home: '/',
+  login: '/login',
+  signup: '/signup',
+  explore: '/explore',
 
-  events: "/events",
-  event: "/events/:id",
+  events: '/events',
+  event: '/events/:id',
 
-  settings: "/settings",
+  profiles: '/profiles',
+  profile: '/profiles/:id',
+
+  settings: '/settings',
 };
 
 export const BREAKPOINTS = {
@@ -20,12 +23,12 @@ export const BREAKPOINTS = {
 
 export const menuItems: IMenuItem[] = [
   {
-    label: "🏡 Home",
+    label: '🏡 Home',
     route: routePaths.home,
     // icon: ChampagneGlassesIcon,
   },
   {
-    label: "🌍 Explore",
+    label: '🌍 Explore',
     route: routePaths.explore,
     // icon: ChampagneGlassesIcon,
   },
