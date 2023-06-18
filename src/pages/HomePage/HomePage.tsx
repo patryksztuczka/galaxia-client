@@ -12,7 +12,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-4 md:pt-0">
       {events?.map((event) => (
         <EventCard key={event.id} event={event} />
       ))}

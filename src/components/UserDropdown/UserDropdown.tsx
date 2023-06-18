@@ -39,8 +39,11 @@ const UserDropdown = () => {
         onClick={handleToggleDropdown}
       />
       {isOpen && (
-        <div className="absolute top-10 right-0 z-10 flex w-40 flex-col gap-2 rounded-lg bg-white p-2 shadow-primary">
-          <Link to={`${routePaths.profiles}/${user?.id}`}>{user?.user_metadata.full_name}</Link>
+        <div className="absolute top-10 right-0 z-10 flex w-40 flex-col justify-end gap-2 rounded-lg bg-white p-2 shadow-primary">
+          <Link to={`${routePaths.profiles}/${user?.id}`} className="font-bold">
+            {user?.user_metadata.full_name}
+          </Link>
+          <Link to={routePaths.settings}>Settings</Link>
           <span onClick={handleLogout}>Log out</span>
         </div>
       )}

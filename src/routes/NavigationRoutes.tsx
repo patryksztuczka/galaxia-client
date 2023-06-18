@@ -12,6 +12,8 @@ import HomePage from '../pages/HomePage/HomePage';
 import SettingsPage from '../pages/SettingsPage/SettingsPage';
 import EventPage from '../pages/EventPage/EventPage';
 import ProfilePage from '../pages/ProfilePage/ProfilePage';
+import CreateEventPage from '../pages/CreateEventPage/CreateEventPage';
+import EditEventPage from '../pages/EditEventPage/EditEventPage';
 
 const NavigationRoutes = () => {
   const location = useLocation();
@@ -24,6 +26,8 @@ const NavigationRoutes = () => {
             <Route element={<PrivateTemplate />}>
               <Route path={routePaths.home} element={<HomePage />} />
               <Route path={routePaths.event} element={<EventPage />} />
+              <Route path={routePaths.createEvent} element={<CreateEventPage />} />
+              <Route path={routePaths.editEvent} element={<EditEventPage />} />
               <Route path={routePaths.profile} element={<ProfilePage />} />
               <Route path={routePaths.settings} element={<SettingsPage />} />
             </Route>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { ISignupFormValues } from '../../types/ISignupFormValues';
 import Input from '../../components/Input/Input';
@@ -11,6 +11,7 @@ import SwitchFormAnimation from '../../components/SwitchFormAnimation/SwitchForm
 import { supabase } from '../../supabaseClient';
 
 const SignupPage = () => {
+  const navigate = useNavigate();
   const { auth } = supabase;
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -43,6 +44,7 @@ const SignupPage = () => {
       console.log(error);
     } finally {
       setIsLoading(false);
+      navigate('/login');
     }
   };
 

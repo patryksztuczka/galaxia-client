@@ -1,4 +1,4 @@
-import { StateCreator } from 'zustand';
+import { StateCreator, create } from 'zustand';
 
 import { supabase } from '../../supabaseClient';
 import { Database } from '../../types/supabase';
@@ -7,27 +7,39 @@ export interface IEventSlice {
   events: Database['public']['Tables']['Events']['Row'][] | undefined;
   event: Database['public']['Tables']['Events']['Row'] | undefined | any;
   eventAttendees: any;
+  userAttendingEvents: any;
+  userHostingEvents: any;
   getEventsStatus: boolean;
   getEventByIdStatus: boolean;
   getEventAttendeesStatus: boolean;
   attendEventStatus: boolean;
   resignFromEventStatus: boolean;
+  createEventStatus: boolean;
+  editEventStatus: boolean;
   getEvents: () => void;
   getEventById: (eventId: string) => void;
   getEventAttendees: (eventId: string) => void;
   attendEvent: (eventId: string, userId: string) => void;
   resignFromEvent: (eventId: string, userId: string) => void;
+  createEvent: (input: any) => void;
+  editEvent: (input: any) => void;
+  getUserAttendingEvents: (userId: string) => void;
+  getUserHostingEvents: (userId: string) => void;
 }
 
 export const createEventSlice: StateCreator<IEventSlice> = (set) => ({
   events: undefined,
   event: undefined,
   eventAttendees: undefined,
+  userAttendingEvents: undefined,
+  userHostingEvents: undefined,
   getEventsStatus: false,
   getEventByIdStatus: false,
   getEventAttendeesStatus: false,
   attendEventStatus: false,
   resignFromEventStatus: false,
+  createEventStatus: false,
+  editEventStatus: false,
 
   getEvents: async () => {
     try {
@@ -124,6 +136,65 @@ export const createEventSlice: StateCreator<IEventSlice> = (set) => ({
       console.log(error);
     } finally {
       set({ resignFromEventStatus: false });
+    }
+  },
+
+  createEvent: async (input: any) => {
+    try {
+      set({ createEventStatus: true });
+      const { data, error } = await supabase
+        .from('Events')
+        .insert([{ ...input }])
+        .select();
+      if (error) throw error;
+      return data[0].id;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ createEventStatus: false });
+    }
+  },
+
+  editEvent: async (input: any) => {
+    try {
+      set({ editEventStatus: true });
+      const { data, error } = await supabase
+        .from('Events')
+        .update({ ...input })
+        .eq('id', input.id)
+        .select();
+      if (error) throw error;
+      return data[0].id;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ editEventStatus: false });
+    }
+  },
+
+  getUserAttendingEvents: async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('EventsAttendees')
+        .select(`event_id (id, name, description, start_datetime, end_datetime, image)`)
+        .eq('attendee_id', userId);
+      if (error) throw error;
+      set({ userAttendingEvents: data });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getUserHostingEvents: async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('Events')
+        .select(`id, name, description, start_datetime, end_datetime, image`)
+        .eq('author', userId);
+      if (error) throw error;
+      set({ userHostingEvents: data });
+    } catch (error) {
+      console.log(error);
     }
   },
 });

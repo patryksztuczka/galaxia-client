@@ -10,6 +10,8 @@ import Button from '../../components/Button/Button';
 import userImagePlaceholder from '../../assets/images/user-placeholder.jpg';
 import { useAuth } from '../../context/AuthContext/AuthContext';
 import Spinner from '../../components/Spinner/Spinner';
+import { Link } from 'react-router-dom';
+import { routePaths } from '../../constants';
 
 const EventPage = () => {
   const user = useAuth()?.session?.user;
@@ -43,7 +45,11 @@ const EventPage = () => {
   }, [window.location.pathname]);
 
   if (event === undefined || getEventByIdStatus) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-full flex-col items-center justify-center gap-2 bg-white p-4 md:rounded-lg">
+        <Spinner />;
+      </div>
+    );
   }
 
   const isUserAttending = eventAttendees?.find(
@@ -66,7 +72,18 @@ const EventPage = () => {
         className="max-h-56 w-full md:max-h-72 md:select-none md:rounded-t-lg"
       />
       <main className="flex flex-col gap-4 overflow-auto px-4">
-        <h1 className="text-2xl font-semibold md:text-3xl md:font-bold">{event?.name}</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-semibold md:text-3xl md:font-bold">{event?.name}</h1>
+          {event.author.id === user?.id && (
+            <Link
+              to={`${routePaths.events}/edit/${event.id}`}
+              type="button"
+              className="h-10 w-fit rounded-lg bg-purple-300 p-2 font-medium text-white"
+            >
+              Edit event
+            </Link>
+          )}
+        </div>
         <div className="flex items-center gap-3">
           <div className="h-5 w-5">
             <ClockIcon className="fill-slate-300" />
@@ -94,7 +111,15 @@ const EventPage = () => {
             <UserIcon className="fill-slate-300" />
           </div>
           <div className="flex flex-col">
-            <h2 className="font-semibold">Hosted by {event?.author.full_name}</h2>
+            <h2 className="font-semibold">
+              Hosted by{' '}
+              <Link
+                to={`${routePaths.profiles}/${event?.author.id}`}
+                className="cursor-pointer font-bold hover:underline"
+              >
+                {event?.author.full_name}
+              </Link>
+            </h2>
           </div>
         </div>
         <div className="flex items-center gap-3">

@@ -1,11 +1,11 @@
-import { useState, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useState, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
-import { useDetectOutsideClick } from "../../hooks/useDetectOutsideClick";
-import HamburgerIcon from "../../assets/icons/HamburgerIcon";
-import CloseIcon from "../../assets/icons/CloseIcon";
-import { menuItems } from "../../constants";
+import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick';
+import HamburgerIcon from '../../assets/icons/HamburgerIcon';
+import CloseIcon from '../../assets/icons/CloseIcon';
+import { menuItems } from '../../constants';
 
 const MobileSideMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,7 +24,7 @@ const MobileSideMenu = () => {
 
   return (
     <div>
-      <div className="w-6 h-6" onClick={handleOpenSideMenu}>
+      <div className="h-6 w-6" onClick={handleOpenSideMenu}>
         <HamburgerIcon />
       </div>
       <AnimatePresence>
@@ -35,19 +35,20 @@ const MobileSideMenu = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.1 }}
-            className="absolute top-0 left-0 bg-black w-screen h-screen bg-opacity-25 z-10"
+            className="absolute top-0 left-0 z-10 h-screen w-screen bg-black bg-opacity-25"
           >
             <motion.div
               ref={menuRef}
               key="menu"
-              initial={{ x: "-100%" }}
+              initial={{ x: '-100%' }}
               animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
+              exit={{ x: '-100%' }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col gap-2 bg-white w-48 h-screen p-3"
+              className="flex h-screen w-48 flex-col gap-4 bg-white p-3"
             >
-              <div className="flex justify-end">
-                <div className="w-6 h-6" onClick={handleCloseSideMenu}>
+              <div className="flex justify-between">
+                <div className="flex w-full gap-4 text-lg font-bold">🌠 Galaxia</div>
+                <div className="h-6 w-6" onClick={handleCloseSideMenu}>
                   <CloseIcon />
                 </div>
               </div>

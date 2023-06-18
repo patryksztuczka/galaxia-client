@@ -10,6 +10,8 @@ export const routePaths = {
 
   events: '/events',
   event: '/events/:id',
+  createEvent: '/events/create',
+  editEvent: '/events/edit/:id',
 
   profiles: '/profiles',
   profile: '/profiles/:id',
