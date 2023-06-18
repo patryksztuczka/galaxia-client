@@ -31,7 +31,7 @@ const UserDropdown = () => {
   useDetectOutsideClick(dropdownContainerRef, handleCloseDropdown);
 
   return (
-    <div ref={dropdownContainerRef} className="relative">
+    <div ref={dropdownContainerRef} className="relative cursor-pointer">
       <img
         src={userPlaceholderImage}
         alt="User's profile photo"

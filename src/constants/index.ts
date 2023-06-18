@@ -23,13 +23,8 @@ export const BREAKPOINTS = {
 
 export const menuItems: IMenuItem[] = [
   {
-    label: '🏡 Home',
-    route: routePaths.home,
-    // icon: ChampagneGlassesIcon,
-  },
-  {
     label: '🌍 Explore',
-    route: routePaths.explore,
+    route: routePaths.home,
     // icon: ChampagneGlassesIcon,
   },
 ];
