@@ -27,6 +27,9 @@ export const AuthProvider = ({ children }: IAuthProvider) => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
+      if (session) {
+        getUserById(session.user.id);
+      }
     });
 
     setData();
