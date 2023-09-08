@@ -2,19 +2,18 @@ import { useEffect } from 'react';
 import { parseISO, format } from 'date-fns';
 
 import { useBoundStore } from '../../zustand/store';
+import { Link } from 'react-router-dom';
+import { routePaths } from '../../constants';
+import { supabase } from '../../supabaseClient';
 import noImagePlaceholder from '../../assets/images/no-image-placeholder.jpg';
 import ClockIcon from '../../assets/icons/ClockIcon';
-import LocationPinIcon from '../../assets/icons/LocationPinIcon';
 import UserIcon from '../../assets/icons/UserIcon';
 import Button from '../../components/Button/Button';
 import userImagePlaceholder from '../../assets/images/user-placeholder.jpg';
-import { useAuth } from '../../context/AuthContext/AuthContext';
 import Spinner from '../../components/Spinner/Spinner';
-import { Link } from 'react-router-dom';
-import { routePaths } from '../../constants';
 
 const EventPage = () => {
-  const user = useAuth()?.session?.user;
+  const user = useBoundStore((state) => state.user);
 
   const getEventById = useBoundStore((state) => state.getEventById);
 
@@ -66,10 +65,10 @@ const EventPage = () => {
   };
 
   return (
-    <div className="relative flex h-full flex-col gap-2 bg-white md:rounded-lg">
+    <div className="relative flex h-full flex-col gap-2 pt-4 md:rounded-lg">
       <img
         src={event?.image || noImagePlaceholder}
-        className="max-h-56 w-full md:max-h-72 md:select-none md:rounded-t-lg"
+        className="md:max-h-px-2 max-h-56 w-full object-cover md:select-none md:rounded-t-lg"
       />
       <main className="flex flex-col gap-4 overflow-auto px-4">
         <div className="flex items-center justify-between">
@@ -78,7 +77,7 @@ const EventPage = () => {
             <Link
               to={`${routePaths.events}/edit/${event.id}`}
               type="button"
-              className="h-10 w-fit rounded-lg bg-purple-300 p-2 font-medium text-white"
+              className="h-10 w-fit rounded-lg bg-green-600 p-2 font-medium text-white"
             >
               Edit event
             </Link>
@@ -92,18 +91,11 @@ const EventPage = () => {
             <h2 className="font-semibold">
               {format(parseISO(event?.start_datetime), 'EEEE, do LLLL')}
             </h2>
-            <h3>
-              {format(parseISO(event?.start_datetime), 'K:mm a')} -{' '}
-              {format(parseISO(event?.end_datetime), 'K:mm a')}
-            </h3>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <div className="h-5 w-5">
-            <LocationPinIcon className="fill-slate-300" />
-          </div>
-          <div className="flex flex-col">
-            <h2 className="font-semibold">No location...</h2>
+            <h3>{format(parseISO(event?.start_datetime), 'K:mm a')}</h3>
+            <h2 className="font-semibold">
+              {format(parseISO(event?.end_datetime), 'EEEE, do LLLL')}
+            </h2>
+            <h3>{format(parseISO(event?.end_datetime), 'K:mm a')}</h3>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -132,23 +124,25 @@ const EventPage = () => {
             {getEventAttendeesStatus ? (
               <Spinner />
             ) : (
-              eventAttendees?.map((attendee: any) => (
-                <img
-                  key={attendee.attendee_id.id}
-                  src={attendee.attendee_id.avatar_url || userImagePlaceholder}
-                  title={attendee.attendee_id.full_name}
-                  className="h-10 w-10 rounded-full"
-                />
-              ))
+              eventAttendees?.map((attendee: any) => {
+                const { data } = supabase.storage
+                  .from('avatars')
+                  .getPublicUrl(attendee.attendee_id.avatar);
+                return (
+                  <img
+                    key={attendee.attendee_id.id}
+                    src={data.publicUrl || userImagePlaceholder}
+                    title={attendee.attendee_id.full_name}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                );
+              })
             )}
           </div>
         </div>
-        <p className="mb-24 pt-2 text-justify text-lg">
-          {event?.description || 'No description...'}
-        </p>
+        <p className="mb-24 text-justify text-lg">{event?.description || 'No description...'}</p>
       </main>
-      <div className="fixed bottom-0 left-0 right-0 flex h-20 items-center justify-between bg-white p-4 shadow-primary md:absolute md:rounded-b-lg md:shadow-none">
-        <span className="text-lg font-semibold">FREE</span>
+      <div className="fixed bottom-0 left-0 right-0 flex h-20 items-center justify-end bg-white p-4 shadow-primary md:absolute md:rounded-b-lg md:shadow-none">
         <div className="flex w-44 gap-2">
           <Button
             type="button"

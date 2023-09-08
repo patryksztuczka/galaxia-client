@@ -7,7 +7,7 @@ import useMobile from '../../hooks/useMobile';
 const PrivateTemplate = () => {
   const isMobile = useMobile();
   return (
-    <div className="relative flex min-h-screen flex-col bg-slate-100">
+    <div className="relative flex min-h-screen flex-col">
       <TopBar />
       <div className="flex h-[calc(100vh-48px)] w-full md:justify-center md:p-4">
         <div className="flex w-full md:max-w-5xl md:justify-center md:gap-4">

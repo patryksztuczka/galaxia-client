@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { useState } from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { Link } from 'react-router-dom';
 
-import { ILoginFormValues } from "../../types/ILoginFormValues";
-import Input from "../../components/Input/Input";
-import Button from "../../components/Button/Button";
-import AuthProviderButton from "../../components/AuthProviderButton/AuthProviderButton";
-import GoogleIcon from "../../assets/icons/GoogleIcon";
-import SwitchFormAnimation from "../../components/SwitchFormAnimation/SwitchFormAnimation";
-import { supabase } from "../../supabaseClient";
+import { ILoginFormValues } from '../../types/ILoginFormValues';
+import Input from '../../components/Input/Input';
+import Button from '../../components/Button/Button';
+import AuthProviderButton from '../../components/AuthProviderButton/AuthProviderButton';
+import GoogleIcon from '../../assets/icons/GoogleIcon';
+import SwitchFormAnimation from '../../components/SwitchFormAnimation/SwitchFormAnimation';
+import { supabase } from '../../supabaseClient';
 
 const LoginPage = () => {
   const { auth } = supabase;
@@ -20,10 +20,7 @@ const LoginPage = () => {
     formState: { errors },
   } = useForm<ILoginFormValues>();
 
-  const onSubmit: SubmitHandler<ILoginFormValues> = async ({
-    email,
-    password,
-  }) => {
+  const onSubmit: SubmitHandler<ILoginFormValues> = async ({ email, password }) => {
     try {
       setIsLoading(true);
       const { data, error } = await auth.signInWithPassword({
@@ -40,11 +37,8 @@ const LoginPage = () => {
 
   return (
     <SwitchFormAnimation>
-      <form
-        className="flex flex-col gap-4 w-full"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <h1 className="text-5xl font-bold text-center mb-8">Log in.</h1>
+      <form className="flex w-full flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <h1 className="mb-8 text-center text-5xl font-bold">Log in.</h1>
         <Controller
           name="email"
           control={control}
@@ -52,7 +46,7 @@ const LoginPage = () => {
           rules={{
             required: {
               value: true,
-              message: "Email is required",
+              message: 'Email is required',
             },
           }}
           render={({ field: { value, onChange } }) => (
@@ -73,7 +67,7 @@ const LoginPage = () => {
           rules={{
             required: {
               value: true,
-              message: "Password is required",
+              message: 'Password is required',
             },
           }}
           render={({ field: { value, onChange } }) => (
@@ -87,20 +81,15 @@ const LoginPage = () => {
             />
           )}
         />
-        <span className="text-right font-semibold cursor-pointer mb-4">
-          Forgot password
-        </span>
+        <span className="mb-4 cursor-pointer text-right font-semibold">Forgot password</span>
         <Button type="submit" text="Log in" isLoading={isLoading} />
-        <div className="flex items-center gap-2 my-6">
-          <div className="flex-1 h-0.5 bg-zinc-200" />
-          <span className="font-semibold text-zinc-200 select-none">or</span>
-          <div className="flex-1 h-0.5 bg-zinc-200" />
+        <div className="my-6 flex items-center gap-2">
+          <div className="h-0.5 flex-1 bg-green-200" />
+          <span className="select-none font-semibold text-green-200">or</span>
+          <div className="h-0.5 flex-1 bg-green-200" />
         </div>
-        <AuthProviderButton
-          providerName="Log in with Google"
-          providerIcon={<GoogleIcon />}
-        />
-        <div className="flex gap-2 justify-center mt-4">
+        <AuthProviderButton providerName="Log in with Google" providerIcon={<GoogleIcon />} />
+        <div className="mt-4 flex justify-center gap-2">
           <span>Don't have an account?</span>
           <Link to="/signup" className="font-semibold">
             Sign up.

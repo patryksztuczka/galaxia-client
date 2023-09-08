@@ -1,6 +1,4 @@
 import { IMenuItem } from '../types/IMenuItem';
-import ChampagneGlassesIcon from '../assets/icons/ChampagneGlassesIcon';
-import GearIcon from '../assets/icons/GearIcon';
 
 export const routePaths = {
   home: '/',
@@ -10,6 +8,8 @@ export const routePaths = {
 
   events: '/events',
   event: '/events/:id',
+  eventsByCategory: '/events/category/:category',
+  eventsCategory: '/events/category',
   createEvent: '/events/create',
   editEvent: '/events/edit/:id',
 
@@ -27,6 +27,19 @@ export const menuItems: IMenuItem[] = [
   {
     label: '🌍 Explore',
     route: routePaths.home,
-    // icon: ChampagneGlassesIcon,
   },
 ];
+
+export const categories: string[] = [
+  'music',
+  'tech',
+  'party',
+  'sports',
+  'arts',
+  'health',
+  'fashion',
+];
+
+export const imageExtensionsUpload = {
+  'image/*': ['.jpeg', '.jpg', '.bmp', '.svg', '.png', '.webp'],
+};

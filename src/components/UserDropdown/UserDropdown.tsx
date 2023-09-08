@@ -2,19 +2,21 @@ import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import { supabase } from '../../supabaseClient';
-import { useAuth } from '../../context/AuthContext/AuthContext';
 import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick';
 import userPlaceholderImage from '../../assets/images/user-placeholder.jpg';
 import { routePaths } from '../../constants';
+import { useBoundStore } from '../../zustand/store';
 
 const UserDropdown = () => {
   const { auth } = supabase;
 
-  const user = useAuth()?.session?.user;
-
   const [isOpen, setIsOpen] = useState(false);
 
   const dropdownContainerRef = useRef<HTMLDivElement>(null);
+
+  const user = useBoundStore((state) => state.user);
+
+  const clearUser = useBoundStore((state) => state.clearUser);
 
   const handleToggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -26,6 +28,7 @@ const UserDropdown = () => {
 
   const handleLogout = async () => {
     await auth.signOut();
+    clearUser();
   };
 
   useDetectOutsideClick(dropdownContainerRef, handleCloseDropdown);
@@ -33,18 +36,22 @@ const UserDropdown = () => {
   return (
     <div ref={dropdownContainerRef} className="relative cursor-pointer">
       <img
-        src={userPlaceholderImage}
+        src={user?.avatar || userPlaceholderImage}
         alt="User's profile photo"
-        className="h-9 w-9 rounded-full"
+        className="border- h-9 w-9 rounded-full border-green-200 object-cover"
         onClick={handleToggleDropdown}
       />
       {isOpen && (
         <div className="absolute top-10 right-0 z-10 flex w-40 flex-col justify-end gap-2 rounded-lg bg-white p-2 shadow-primary">
           <Link to={`${routePaths.profiles}/${user?.id}`} className="font-bold">
-            {user?.user_metadata.full_name}
+            {user?.full_name}
           </Link>
-          <Link to={routePaths.settings}>Settings</Link>
-          <span onClick={handleLogout}>Log out</span>
+          <Link to={routePaths.settings} className="border-y border-green-200 py-2">
+            Settings
+          </Link>
+          <span onClick={handleLogout} className="font-semibold">
+            Log out
+          </span>
         </div>
       )}
     </div>

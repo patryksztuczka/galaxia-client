@@ -4,8 +4,10 @@ import { supabase } from '../../supabaseClient';
 import { Database } from '../../types/supabase';
 
 export interface IEventSlice {
-  events: Database['public']['Tables']['Events']['Row'][] | undefined;
+  upcomingEvents: Database['public']['Tables']['Events']['Row'][] | undefined;
+  ongoingEvents: Database['public']['Tables']['Events']['Row'][] | undefined;
   event: Database['public']['Tables']['Events']['Row'] | undefined | any;
+  filteredEvents: Database['public']['Tables']['Events']['Row'][] | undefined;
   eventAttendees: any;
   userAttendingEvents: any;
   userHostingEvents: any;
@@ -16,8 +18,10 @@ export interface IEventSlice {
   resignFromEventStatus: boolean;
   createEventStatus: boolean;
   editEventStatus: boolean;
-  getEvents: () => void;
+  getUpcomingEvents: () => void;
+  getOngoingEvents: () => void;
   getEventById: (eventId: string) => void;
+  getEventsByCategory: (category: string) => void;
   getEventAttendees: (eventId: string) => void;
   attendEvent: (eventId: string, userId: string) => void;
   resignFromEvent: (eventId: string, userId: string) => void;
@@ -28,8 +32,10 @@ export interface IEventSlice {
 }
 
 export const createEventSlice: StateCreator<IEventSlice> = (set) => ({
-  events: undefined,
+  upcomingEvents: undefined,
+  ongoingEvents: undefined,
   event: undefined,
+  filteredEvents: undefined,
   eventAttendees: undefined,
   userAttendingEvents: undefined,
   userHostingEvents: undefined,
@@ -41,15 +47,34 @@ export const createEventSlice: StateCreator<IEventSlice> = (set) => ({
   createEventStatus: false,
   editEventStatus: false,
 
-  getEvents: async () => {
+  getUpcomingEvents: async () => {
     try {
       set({ getEventsStatus: true });
       const { data, error } = await supabase
         .from('Events')
         .select('*')
+        .gt('start_datetime', new Date().toISOString())
         .order('start_datetime', { ascending: true });
       if (error) throw error;
-      set({ events: data });
+      set({ upcomingEvents: data });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ getEventsStatus: false });
+    }
+  },
+
+  getOngoingEvents: async () => {
+    try {
+      set({ getEventsStatus: true });
+      const { data, error } = await supabase
+        .from('Events')
+        .select('*')
+        .lte('start_datetime', new Date().toISOString())
+        .gte('end_datetime', new Date().toISOString())
+        .order('start_datetime', { ascending: true });
+      if (error) throw error;
+      set({ ongoingEvents: data });
     } catch (error) {
       console.log(error);
     } finally {
@@ -76,12 +101,25 @@ export const createEventSlice: StateCreator<IEventSlice> = (set) => ({
     }
   },
 
+  getEventsByCategory: async (category: string) => {
+    try {
+      set({ getEventByIdStatus: true });
+      const { data, error } = await supabase.from('Events').select(`*`).eq('category', category);
+      if (error) throw error;
+      set({ filteredEvents: data });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      set({ getEventByIdStatus: false });
+    }
+  },
+
   getEventAttendees: async (eventId: string) => {
     try {
       set({ getEventAttendeesStatus: true });
       const { data, error } = await supabase
         .from('EventsAttendees')
-        .select(`attendee_id (id, avatar_url, full_name)`)
+        .select(`attendee_id (id, avatar, full_name)`)
         .eq('event_id', eventId);
       if (error) throw error;
       set({ eventAttendees: data });
@@ -99,14 +137,20 @@ export const createEventSlice: StateCreator<IEventSlice> = (set) => ({
         .from('EventsAttendees')
         .insert([{ event_id: eventId, attendee_id: userId }]);
       if (error) throw error;
+      const { data, error: getUserError } = await supabase
+        .from('profiles')
+        .select(`full_name, avatar, id`)
+        .eq('id', userId)
+        .limit(1);
+      if (getUserError) throw getUserError;
       set((state) => ({
         eventAttendees: [
           ...state.eventAttendees,
           {
             attendee_id: {
               id: userId,
-              avatar_url: null,
-              full_name: null,
+              avatar: data[0].avatar,
+              full_name: data[0].full_name,
             },
           },
         ],
@@ -189,8 +233,9 @@ export const createEventSlice: StateCreator<IEventSlice> = (set) => ({
     try {
       const { data, error } = await supabase
         .from('Events')
-        .select(`id, name, description, start_datetime, end_datetime, image`)
-        .eq('author', userId);
+        .select(`id, name, description, start_datetime, end_datetime, image, category`)
+        .eq('author', userId)
+        .order('start_datetime', { ascending: false });
       if (error) throw error;
       set({ userHostingEvents: data });
     } catch (error) {

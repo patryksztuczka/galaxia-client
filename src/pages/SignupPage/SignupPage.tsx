@@ -163,9 +163,9 @@ const SignupPage = () => {
           <Button type="submit" text="Sign up" isLoading={isLoading} />
         </div>
         <div className="my-6 flex items-center gap-2">
-          <div className="h-0.5 flex-1 bg-zinc-200" />
-          <span className="select-none font-semibold text-zinc-200">or</span>
-          <div className="h-0.5 flex-1 bg-zinc-200" />
+          <div className="h-0.5 flex-1 bg-green-200" />
+          <span className="select-none font-semibold text-green-200">or</span>
+          <div className="h-0.5 flex-1 bg-green-200" />
         </div>
         <AuthProviderButton providerName="Sign up with Google" providerIcon={<GoogleIcon />} />
         <div className="mt-4 flex justify-center gap-2">

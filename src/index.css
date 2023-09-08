@@ -3,5 +3,11 @@
 @tailwind utilities;
 
 html {
-  @apply text-blue-900;
+  @apply text-black;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
 }

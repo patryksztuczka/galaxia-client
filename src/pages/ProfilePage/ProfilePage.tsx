@@ -1,23 +1,18 @@
-import { useEffect } from 'react';
-import clsx from 'clsx';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 import { useBoundStore } from '../../zustand/store';
 import userPlaceholderImage from '../../assets/images/user-placeholder.jpg';
 import EventCard from '../../components/EventCard/EventCard';
-import { useAuth } from '../../context/AuthContext/AuthContext';
-import { routePaths } from '../../constants';
+import Spinner from '../../components/Spinner/Spinner';
 
 const ProfilePage = () => {
-  const authUser = useAuth()?.session?.user;
+  const [isImageError, setIsImageError] = useState(false);
 
   const user = useBoundStore((state) => state.user);
 
   const userAttendingEvents = useBoundStore((state) => state.userAttendingEvents);
 
   const userHostingEvents = useBoundStore((state) => state.userHostingEvents);
-
-  const getUserById = useBoundStore((state) => state.getUserById);
 
   const getUserAttendingEvents = useBoundStore((state) => state.getUserAttendingEvents);
 
@@ -26,56 +21,50 @@ const ProfilePage = () => {
   const getUserByIdStatus = useBoundStore((state) => state.getUserByIdStatus);
 
   useEffect(() => {
-    if (window.location.pathname) {
-      const userId = window.location.pathname.split('/')[2];
-      getUserById(userId);
-      getUserAttendingEvents(userId);
-      getUserHostingEvents(userId);
+    if (user && user.id) {
+      getUserAttendingEvents(user.id);
+      getUserHostingEvents(user.id);
     }
-  }, [window.location.pathname]);
+  }, []);
 
   if (user === undefined || getUserByIdStatus) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex h-full flex-col items-center justify-center gap-2 p-4 md:rounded-lg">
+        <Spinner />;
+      </div>
+    );
   }
 
   return (
-    <div className="flex h-full flex-col bg-white md:rounded-lg">
-      <div className="relative flex h-10 w-full bg-purple-900 md:h-16 md:rounded-t-lg">
+    <div className="flex h-full flex-col overflow-visible md:rounded-lg">
+      <div className="relative flex h-10 w-full bg-green-500 md:h-16 md:rounded-t-lg">
         <img
-          src={user.avatar_url || userPlaceholderImage}
+          src={isImageError ? userPlaceholderImage : user.avatar || undefined}
           alt="User's profile photo"
-          className="absolute left-4 top-3 h-14 w-14 rounded-full border-4 border-purple-900 md:h-28 md:w-28"
+          className="absolute left-4 top-3 h-14 w-14 rounded-full border-4 border-green-500 object-cover md:h-28 md:w-28"
+          onError={() => setIsImageError(true)}
         />
       </div>
-      <div className={clsx('flex justify-end px-4 pt-10', user.id === authUser?.id && 'pt-2')}>
-        {user.id === authUser?.id && (
-          <Link
-            to={routePaths.settings}
-            type="button"
-            className="h-10 w-fit rounded-lg bg-purple-300 p-2 font-medium text-white"
-          >
-            Edit profile
-          </Link>
-        )}
-      </div>
-      <div className="overflow-auto px-4 md:mt-6">
-        <h1 className="pb-4 text-xl font-bold md:text-3xl">{user.full_name}</h1>
-        <div>
-          <span className="text-lg font-bold">Events you are attending:</span>
+      <div className="mt-10 overflow-visible">
+        <h1 className="px-4 pb-4 text-xl font-bold md:text-3xl">{user.full_name}</h1>
+        <p className="px-4 pb-1 font-medium">Bio</p>
+        <p className="border-b border-green-200 px-4 pb-4">{user.bio}</p>
+        <div className="overflow-visible">
+          <h2 className="pl-4 pt-4 font-semibold">Hosted events:</h2>
+          <div className="flex w-full gap-4 overflow-visible overflow-x-auto p-4">
+            {userHostingEvents?.map((event: any) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </div>
+        </div>
+        {/* <div>
+          <h2 className="pl-4 font-semibold">Events you are attending:</h2>
           <div className="flex flex-col gap-4 pt-4">
             {userAttendingEvents?.map(({ event_id }: any) => (
-              <EventCard key={event_id.id} event={event_id} profileCard />
+              <EventCard key={event_id.id} event={event_id} />
             ))}
           </div>
-        </div>
-        <div className="pt-6">
-          <span className="text-lg font-bold">Events you are hosting:</span>
-          <div className="flex flex-col gap-4 pt-4">
-            {userHostingEvents?.map((event: any) => (
-              <EventCard key={event.id} event={event} profileCard />
-            ))}
-          </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

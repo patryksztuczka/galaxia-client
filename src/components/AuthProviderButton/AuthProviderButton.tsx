@@ -1,17 +1,13 @@
-import { IAuthProviderButtonProps } from "./AuthProviderButton.types";
+import { IAuthProviderButtonProps } from './AuthProviderButton.types';
 
-const AuthProviderButton = ({
-  providerName,
-  providerIcon,
-  onClick,
-}: IAuthProviderButtonProps) => {
+const AuthProviderButton = ({ providerName, providerIcon, onClick }: IAuthProviderButtonProps) => {
   return (
     <div
-      className="flex items-center gap-2 justify-center h-16 border-2 rounded-lg border-bg-zinc-200 cursor-pointer shadow-md"
+      className="border-bg-zinc-200 flex h-14 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-green-200"
       onClick={onClick}
     >
       <div className="flex h-6 w-6">{providerIcon}</div>
-      <span className="font-bold text-xl">{providerName}</span>
+      <span className="text-xl font-bold text-green-500">{providerName}</span>
     </div>
   );
 };

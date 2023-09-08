@@ -14,6 +14,7 @@ import EventPage from '../pages/EventPage/EventPage';
 import ProfilePage from '../pages/ProfilePage/ProfilePage';
 import CreateEventPage from '../pages/CreateEventPage/CreateEventPage';
 import EditEventPage from '../pages/EditEventPage/EditEventPage';
+import FilteredEventsPage from '../pages/FilteredEventsPage/FilteredEventsPage';
 
 const NavigationRoutes = () => {
   const location = useLocation();
@@ -26,6 +27,7 @@ const NavigationRoutes = () => {
             <Route element={<PrivateTemplate />}>
               <Route path={routePaths.home} element={<HomePage />} />
               <Route path={routePaths.event} element={<EventPage />} />
+              <Route path={routePaths.eventsByCategory} element={<FilteredEventsPage />} />
               <Route path={routePaths.createEvent} element={<CreateEventPage />} />
               <Route path={routePaths.editEvent} element={<EditEventPage />} />
               <Route path={routePaths.profile} element={<ProfilePage />} />
