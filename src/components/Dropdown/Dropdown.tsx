@@ -26,7 +26,7 @@ const Dropdown: FC<IDropdownProps> = ({ data, label, onChange, placeholder, valu
         <div
           className={clsx('flex w-full items-center justify-between', !value && 'text-gray-400')}
         >
-          <span className="capitalize">{value ? value : placeholder}</span>
+          <span>{value ? <span className="capitalize">value</span> : placeholder}</span>
           <div className={clsx('duration-150', isOpen ? 'rotate-180' : 'rotate-0')}>
             <ChevronIcon />
           </div>
