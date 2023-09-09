@@ -73,7 +73,7 @@ const EventPage = () => {
       <main className="flex flex-col gap-4 overflow-auto px-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold md:text-3xl md:font-bold">{event?.name}</h1>
-          {event.author.id === user?.id && (
+          {event.author.id === user?.id && new Date(event.end_datetime) > new Date() && (
             <Link
               to={`${routePaths.events}/edit/${event.id}`}
               type="button"
@@ -143,14 +143,18 @@ const EventPage = () => {
         <p className="mb-24 text-justify text-lg">{event?.description || 'No description...'}</p>
       </main>
       <div className="fixed bottom-0 left-0 right-0 flex h-20 items-center justify-end bg-white p-4 shadow-primary md:absolute md:rounded-b-lg md:shadow-none">
-        <div className="flex w-44 gap-2">
-          <Button
-            type="button"
-            text={isUserAttending ? 'Attending' : 'Attend'}
-            isLoading={attendEventStatus || resignFromEventStatus}
-            onClick={handleAttendEvent}
-          />
-        </div>
+        {new Date(event.end_datetime) > new Date() ? (
+          <div className="flex w-44 gap-2">
+            <Button
+              type="button"
+              text={isUserAttending ? 'Attending' : 'Attend'}
+              isLoading={attendEventStatus || resignFromEventStatus}
+              onClick={handleAttendEvent}
+            />
+          </div>
+        ) : (
+          <span className="text-xl font-bold">Event passed</span>
+        )}
       </div>
     </div>
   );

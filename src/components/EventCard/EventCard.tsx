@@ -9,14 +9,9 @@ const EventCard = ({ event }: IEventCardProps) => {
   return (
     <div
       className={clsx(
-        'relative flex w-80 min-w-[320px] flex-1 flex-col justify-center rounded-lg p-2 shadow-card',
+        'flex w-80 min-w-[320px] flex-1 flex-col justify-center rounded-lg p-2 shadow-card',
       )}
     >
-      {new Date(event.end_datetime) < new Date() && (
-        <div className="absolute top-0 left-0 flex h-full w-full items-center justify-center rounded-lg bg-black/70 backdrop-blur-sm">
-          <span className="text-xl font-semibold text-white">Passed.</span>
-        </div>
-      )}
       <div className="relative">
         <span className="absolute top-4 right-4 text-2xl font-bold tracking-wide text-white">
           #{event.category}
